@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | Aetherius</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Route guard runs immediately before rendering
+    Auth.guardStudentRoute();
+  </script>
+</head>
+<body>
+
+  <!-- Mobile Top Navigation Header -->
+  <div class="mobile-header">
+    <div class="sidebar-logo">AETHERIUS</div>
+    <button class="mobile-menu-btn" id="mobile-toggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <div class="user-avatar" style="border-radius: 10px; width: 36px; height: 36px; font-size: 1rem;">Æ</div>
+        <div class="sidebar-logo">Aetherius</div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li class="nav-item">
+          <div class="nav-link active" data-tab="profile">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>My Profile</span>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-tab="learning-hub">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <span>Learning Hub</span>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-tab="campus-gallery">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Campus Gallery</span>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-tab="live-chat">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Live Chatbox</span>
+          </div>
+        </li>
+      </ul>
+
+      <!-- User Profile Box -->
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-user-avatar">SD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-user-name">Loading...</div>
+          <div class="user-role" id="sidebar-user-dept">Student</div>
+        </div>
+        <button onclick="Auth.logout()" class="btn btn-secondary" style="padding: 8px; border-radius: 8px;" title="Logout">
+          <!-- Logout svg icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main class="main-content">
+      
+      <div class="content-header">
+        <div class="content-title">
+          <h2 id="header-greeting">Welcome back!</h2>
+          <p id="header-subtitle">Manage your classes and resources</p>
+        </div>
+      </div>
+
+      <!-- TAB 1: PROFILE HUB -->
+      <section class="dashboard-tab active" id="tab-profile">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+          
+          <!-- Detailed Profile Info Card -->
+          <div class="glass-panel" style="padding: 30px;">
+            <h3 style="margin-bottom: 24px; color: var(--color-primary); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">
+              Student Information
+            </h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Full Name</label>
+                <div style="font-size: 1.2rem; font-weight: 600; margin-top: 4px;" id="profile-name">Loading...</div>
+              </div>
+
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Enrollment ID</label>
+                <div style="font-size: 1.1rem; font-family: monospace; font-weight: 600; color: var(--color-secondary); margin-top: 4px;" id="profile-enrollment">Loading...</div>
+              </div>
+
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Academic Department</label>
+                <div style="margin-top: 6px;">
+                  <span class="badge" id="profile-dept-badge">Loading...</span>
+                </div>
+              </div>
+
+              <div>
+                <label style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Email Address</label>
+                <div style="font-size: 1rem; color: var(--text-primary); margin-top: 4px;" id="profile-email">Loading...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Database Status Info Card -->
+          <div class="glass-panel" style="padding: 30px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <h3 style="margin-bottom: 20px; color: var(--color-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span>Local Database Status</span>
+                <span style="font-size: 0.75rem; color: var(--color-success); display: inline-flex; align-items: center; gap: 6px;">
+                  <span class="chat-active-dot" style="margin: 0; width: 6px; height: 6px;"></span> Connected
+                </span>
+              </h3>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                <div style="padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); text-align: center;">
+                  <div style="font-size: 1.4rem; font-weight: 700; color: var(--color-primary);" id="db-stat-students">0</div>
+                  <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px;">Students</div>
+                </div>
+                <div style="padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); text-align: center;">
+                  <div style="font-size: 1.4rem; font-weight: 700; color: var(--color-secondary);" id="profile-stat-files">0</div>
+                  <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px;">PDFs</div>
+                </div>
+                <div style="padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); text-align: center;">
+                  <div style="font-size: 1.4rem; font-weight: 700; color: var(--color-success);" id="db-stat-images">0</div>
+                  <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px;">Images</div>
+                </div>
+                <div style="padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); text-align: center;">
+                  <div style="font-size: 1.4rem; font-weight: 700; color: var(--color-warning);" id="db-stat-chats">0</div>
+                  <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px;">Messages</div>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                  <span>Storage Utilization</span>
+                  <span id="db-storage-percent">0%</span>
+                </div>
+                <div style="height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                  <div id="db-storage-bar" style="height: 100%; width: 0%; background: var(--grad-accent); border-radius: 3px; transition: width 0.5s;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: rgba(99, 102, 241, 0.05); border: 1px dashed rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 12px; text-align: center; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--text-secondary);">Indexed localStorage</span>
+              <button class="btn btn-secondary" onclick="resetLocalDB()" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px;">Reset Data</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 2: LEARNING HUB -->
+      <section class="dashboard-tab" id="tab-learning-hub">
+        <div class="registry-controls">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="form-control" id="pdf-search" placeholder="Search files by title or description...">
+          </div>
+          
+          <div class="filter-group">
+            <button class="btn btn-secondary active-filter" data-dept-filter="All">All Resources</button>
+            <button class="btn btn-secondary" data-dept-filter="MyDept">My Department</button>
+          </div>
+        </div>
+
+        <div class="resource-grid" id="pdf-grid">
+          <!-- Loaded PDFs will be injected here -->
+        </div>
+      </section>
+
+      <!-- TAB 3: CAMPUS GALLERY -->
+      <section class="dashboard-tab" id="tab-campus-gallery">
+        <div class="registry-controls">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="form-control" id="img-search" placeholder="Search gallery by title...">
+          </div>
+          
+          <div class="filter-group">
+            <button class="btn btn-secondary active-filter" data-img-filter="All">All Campus</button>
+            <button class="btn btn-secondary" data-img-filter="MyDept">My Department</button>
+          </div>
+        </div>
+
+        <div class="resource-grid" id="gallery-grid">
+          <!-- Loaded images will be injected here -->
+        </div>
+      </section>
+
+      <!-- TAB 4: LIVE BROADCAST CHAT -->
+      <section class="dashboard-tab" id="tab-live-chat">
+        <div class="chat-container glass-panel">
+          
+          <div class="chat-header">
+            <h3>College Broadcast Room</h3>
+            <div class="chat-active-indicator">
+              <div class="chat-active-dot"></div>
+              <span>Live Chat System</span>
+            </div>
+          </div>
+
+          <div class="chat-body" id="chat-messages-container">
+            <!-- Dynamic Messages injected here -->
+          </div>
+
+          <div class="chat-footer">
+            <form id="chat-send-form">
+              <div class="chat-input-wrapper">
+                <input type="text" class="form-control" id="chat-input-text" placeholder="Type a message here..." required maxlength="300">
+                <button type="submit" class="btn btn-primary" id="chat-send-btn">
+                  <span>Send</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polyline points="22 2 15 22 11 13 2 9 22 2"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- LIGHTBOX MODAL FOR IMAGES -->
+  <div class="lightbox" id="image-lightbox">
+    <div class="lightbox-close" id="lightbox-close">&times;</div>
+    <div class="lightbox-content">
+      <img src="" alt="Enlarged Campus View" class="lightbox-img" id="lightbox-image">
+      <div class="lightbox-caption">
+        <h3 id="lightbox-title">Image Title</h3>
+        <p id="lightbox-desc">Image Description</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client-side Application Scripts -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentSession = Auth.getSession();
+      if (!currentSession || currentSession.role !== 'student') return;
+
+      const studentData = currentSession.data;
+
+      // Populate User details in UI
+      document.getElementById("sidebar-user-name").textContent = studentData.name;
+      document.getElementById("sidebar-user-dept").textContent = studentData.department + " Engg.";
+      document.getElementById("sidebar-user-avatar").textContent = studentData.name.split(' ').map(n => n[0]).join('');
+
+      document.getElementById("header-greeting").textContent = `Welcome back, ${studentData.name.split(' ')[0]}!`;
+      document.getElementById("header-subtitle").textContent = `${studentData.department} Engineering Portal • Enrollment ID: ${studentData.enrollment}`;
+
+      document.getElementById("profile-name").textContent = studentData.name;
+      document.getElementById("profile-enrollment").textContent = studentData.enrollment;
+      document.getElementById("profile-email").textContent = studentData.email;
+
+      const deptBadge = document.getElementById("profile-dept-badge");
+      deptBadge.textContent = studentData.department + " Engineering";
+      deptBadge.className = `badge badge-${studentData.department.toLowerCase()}`;
+
+      // Populate Database Stats in UI
+      const updateDBStats = () => {
+        const studentsCount = DB.getStudents().length;
+        const pdfsCount = DB.getPDFs().length;
+        const imagesCount = DB.getImages().length;
+        const messagesCount = DB.getMessages().length;
+
+        document.getElementById("db-stat-students").textContent = studentsCount;
+        document.getElementById("profile-stat-files").textContent = pdfsCount;
+        document.getElementById("db-stat-images").textContent = imagesCount;
+        document.getElementById("db-stat-chats").textContent = messagesCount;
+
+        // Calculate size of localStorage
+        let totalSize = 0;
+        for (let key in localStorage) {
+          if (localStorage.hasOwnProperty(key)) {
+            totalSize += localStorage[key].length;
+          }
+        }
+        // Max localStorage capacity is around 5MB
+        const percent = Math.min(100, Math.max(0.1, (totalSize / (5 * 1024 * 1024) * 100))).toFixed(2);
+        document.getElementById("db-storage-percent").textContent = `${percent}%`;
+        document.getElementById("db-storage-bar").style.width = `${percent}%`;
+      };
+      
+      updateDBStats();
+      
+      window.resetLocalDB = () => {
+        if (confirm("Are you sure you want to clear and re-seed the local database? This will reset all students, chat logs, and default assets.")) {
+          localStorage.clear();
+          DB.init();
+          DB.showToast("Database reset successfully!", "success");
+          updateDBStats();
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+      };
+
+      // Navigation routing (tab selectors)
+      const tabs = document.querySelectorAll(".nav-link");
+      const panels = document.querySelectorAll(".dashboard-tab");
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          tabs.forEach(t => t.classList.remove("active"));
+          panels.forEach(p => p.classList.remove("active"));
+
+          tab.classList.add("active");
+          const targetTab = tab.getAttribute("data-tab");
+          document.getElementById(`tab-${targetTab}`).classList.add("active");
+
+          // Sidebar auto-close on mobile
+          document.getElementById("dashboard-sidebar").classList.remove("mobile-open");
+
+          // Additional callbacks per tab loading
+          if (targetTab === 'learning-hub') loadPDFs();
+          if (targetTab === 'campus-gallery') loadImages();
+          if (targetTab === 'live-chat') {
+            loadChatMessages();
+            setTimeout(scrollChatToBottom, 100);
+          }
+        });
+      });
+
+      // Mobile Menu Trigger Toggle
+      document.getElementById("mobile-toggle").addEventListener("click", () => {
+        document.getElementById("dashboard-sidebar").classList.toggle("mobile-open");
+      });
+
+      // --- TAB CONTENT LOADER: PDFs ---
+      let pdfFilter = 'All';
+      let pdfSearchTerm = '';
+
+      function loadPDFs() {
+        const grid = document.getElementById("pdf-grid");
+        grid.innerHTML = "";
+
+        const allPDFs = DB.getPDFs();
+        
+        // Filter PDFs: visible to student's department or "All"
+        // Also user can toggle view "All Resources" or "My Department"
+        const filteredPDFs = allPDFs.filter(pdf => {
+          // Check department visibility
+          const isDeptVisible = pdf.department === 'All' || pdf.department === studentData.department;
+          
+          if (!isDeptVisible) return false;
+
+          // Check user filter selection
+          if (pdfFilter === 'MyDept' && pdf.department !== studentData.department) return false;
+
+          // Check search query term
+          if (pdfSearchTerm) {
+            const term = pdfSearchTerm.toLowerCase();
+            return pdf.title.toLowerCase().includes(term) || pdf.description.toLowerCase().includes(term);
+          }
+
+          return true;
+        });
+
+        // Set Available files count in Profile Dashboard
+        document.getElementById("profile-stat-files").textContent = filteredPDFs.length;
+
+        if (filteredPDFs.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state glass-panel" style="grid-column: 1 / -1;">
+              <div class="empty-icon">📁</div>
+              <h3>No Documents Found</h3>
+              <p>No educational syllabus PDF uploads found for this selection.</p>
+            </div>
+          `;
+          return;
+        }
+
+        filteredPDFs.forEach(pdf => {
+          const card = document.createElement("div");
+          card.className = "resource-card glass-panel";
+          card.innerHTML = `
+            <div class="resource-preview-pdf">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <div class="resource-body">
+              <div class="resource-meta">
+                <span class="badge badge-${pdf.department.toLowerCase()}">${pdf.department}</span>
+                <span class="resource-date">${new Date(pdf.uploadedAt).toLocaleDateString()}</span>
+              </div>
+              <h4 class="resource-title">${pdf.title}</h4>
+              <p class="resource-desc">${pdf.description}</p>
+              <div class="resource-footer">
+                <button class="btn btn-primary" onclick="downloadFile('${pdf.fileData}', '${pdf.fileName}')" style="width:100%; padding: 8px 12px; font-size: 0.85rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Download PDF
+                </button>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      // Hook up PDF search & filters
+      document.getElementById("pdf-search").addEventListener("input", (e) => {
+        pdfSearchTerm = e.target.value;
+        loadPDFs();
+      });
+
+      document.querySelectorAll("[data-dept-filter]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("[data-dept-filter]").forEach(b => b.classList.remove("active-filter", "btn-primary"));
+          btn.classList.add("active-filter");
+          pdfFilter = btn.getAttribute("data-tab") || btn.getAttribute("data-dept-filter");
+          loadPDFs();
+        });
+      });
+
+
+      // --- TAB CONTENT LOADER: IMAGES ---
+      let imgFilter = 'All';
+      let imgSearchTerm = '';
+
+      function loadImages() {
+        const grid = document.getElementById("gallery-grid");
+        grid.innerHTML = "";
+
+        const allImages = DB.getImages();
+        
+        // Filter Images
+        const filteredImages = allImages.filter(img => {
+          const isDeptVisible = img.department === 'All' || img.department === studentData.department;
+          if (!isDeptVisible) return false;
+
+          if (imgFilter === 'MyDept' && img.department !== studentData.department) return false;
+
+          if (imgSearchTerm) {
+            const term = imgSearchTerm.toLowerCase();
+            return img.title.toLowerCase().includes(term) || img.description.toLowerCase().includes(term);
+          }
+
+          return true;
+        });
+
+        if (filteredImages.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state glass-panel" style="grid-column: 1 / -1;">
+              <div class="empty-icon">🖼️</div>
+              <h3>No Images Found</h3>
+              <p>No campus photo gallery uploads found for this selection.</p>
+            </div>
+          `;
+          return;
+        }
+
+        filteredImages.forEach(img => {
+          const card = document.createElement("div");
+          card.className = "resource-card glass-panel";
+          card.innerHTML = `
+            <div style="overflow:hidden; height:180px; position:relative;">
+              <img src="${img.fileData}" alt="${img.title}" class="resource-preview-img" onclick="openLightbox('${img.fileData}', '${img.title.replace(/'/g, "\\'")}', '${img.description.replace(/'/g, "\\'")}')">
+            </div>
+            <div class="resource-body">
+              <div class="resource-meta">
+                <span class="badge badge-${img.department.toLowerCase()}">${img.department}</span>
+                <span class="resource-date">${new Date(img.uploadedAt).toLocaleDateString()}</span>
+              </div>
+              <h4 class="resource-title">${img.title}</h4>
+              <p class="resource-desc">${img.description}</p>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      // Hook up Image search & filters
+      document.getElementById("img-search").addEventListener("input", (e) => {
+        imgSearchTerm = e.target.value;
+        loadImages();
+      });
+
+      document.querySelectorAll("[data-img-filter]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("[data-img-filter]").forEach(b => b.classList.remove("active-filter", "btn-primary"));
+          btn.classList.add("active-filter");
+          imgFilter = btn.getAttribute("data-img-filter");
+          loadImages();
+        });
+      });
+
+
+      // --- TAB CONTENT LOADER: LIVE CHAT ---
+      const chatContainer = document.getElementById("chat-messages-container");
+      const chatForm = document.getElementById("chat-send-form");
+
+      function loadChatMessages() {
+        chatContainer.innerHTML = "";
+        const messages = DB.getMessages();
+
+        if (messages.length === 0) {
+          chatContainer.innerHTML = `
+            <div style="text-align: center; color: var(--text-muted); margin-top: 50px;">
+              No broadcast chats yet. Send a message to start!
+            </div>
+          `;
+          return;
+        }
+
+        messages.forEach(msg => {
+          const isMe = msg.senderRole === 'student' && msg.senderId === studentData.enrollment;
+          const msgClass = isMe ? 'student-msg' : (msg.senderRole === 'admin' ? 'admin-msg' : 'other-msg');
+          
+          let senderLabel = msg.senderName;
+          if (msg.senderRole === 'admin') {
+            senderLabel += ' <span class="badge-admin">Admin</span>';
+          } else if (!isMe) {
+            senderLabel += ` (${msg.senderDept})`;
+          } else {
+            senderLabel = 'You';
+          }
+
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `chat-message ${msgClass}`;
+          
+          let repliesContent = '';
+          if (msg.replies && msg.replies.length > 0) {
+            repliesContent = '<div class="admin-replies-list">';
+            msg.replies.forEach(rep => {
+              repliesContent += `
+                <div class="admin-reply-item">
+                  <div><strong>${rep.senderName} <span class="badge-admin">Admin</span>:</strong> ${rep.text}</div>
+                  <span class="chat-msg-time" style="align-self:flex-end;">${new Date(rep.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                </div>
+              `;
+            });
+            repliesContent += '</div>';
+          }
+
+          messageDiv.innerHTML = `
+            <div class="chat-msg-meta">
+              <span>${senderLabel}</span>
+              <span class="chat-msg-time">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            </div>
+            <div class="chat-bubble">
+              ${msg.text}
+              ${repliesContent}
+            </div>
+          `;
+
+          chatContainer.appendChild(messageDiv);
+        });
+      }
+
+      function scrollChatToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Handle chat submission
+      chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const textInput = document.getElementById("chat-input-text");
+        const val = textInput.value.trim();
+        if (!val) return;
+
+        // Post chat message to DB
+        DB.addMessage({
+          id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          senderName: studentData.name,
+          senderRole: 'student',
+          senderId: studentData.enrollment,
+          senderDept: studentData.department,
+          text: val,
+          timestamp: Date.now(),
+          replies: []
+        });
+
+        textInput.value = "";
+      });
+
+      // Synchronize chats across other active windows (optional live events)
+      window.addEventListener("chat-updated", () => {
+        // Only refresh messages list if Chat tab is active
+        const chatTab = document.querySelector('.nav-link[data-tab="live-chat"]');
+        if (chatTab.classList.contains("active")) {
+          loadChatMessages();
+          scrollChatToBottom();
+        }
+      });
+
+    });
+
+    // File downloader helper
+    function downloadFile(base64Data, filename) {
+      const link = document.createElement("a");
+      link.href = base64Data;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      DB.showToast(`Downloading file: ${filename}`, 'success');
+    }
+
+    // Lightbox modal methods
+    function openLightbox(src, title, desc) {
+      const box = document.getElementById("image-lightbox");
+      const img = document.getElementById("lightbox-image");
+      const t = document.getElementById("lightbox-title");
+      const d = document.getElementById("lightbox-desc");
+
+      img.src = src;
+      t.textContent = title;
+      d.textContent = desc;
+
+      box.classList.add("active");
+    }
+
+    document.getElementById("lightbox-close").addEventListener("click", () => {
+      document.getElementById("image-lightbox").classList.remove("active");
+    });
+    
+    // Close lightbox on clicking outside background
+    document.getElementById("image-lightbox").addEventListener("click", (e) => {
+      if (e.target.id === 'image-lightbox') {
+        document.getElementById("image-lightbox").classList.remove("active");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | Aetherius</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .credentials-box {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.8rem;
+    }
+
+    .credentials-title {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .credentials-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      display: none;
+      animation: fadeIn 0.3s forwards;
+    }
+
+    .credentials-table.open {
+      display: table;
+    }
+
+    .credentials-table th,
+    .credentials-table td {
+      padding: 6px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .credentials-table th {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--color-secondary);
+      cursor: pointer;
+      padding: 0 4px;
+      font-size: 0.75rem;
+    }
+
+    .copy-btn:hover {
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="auth-container">
+    <div class="auth-card glass-panel">
+
+      <div class="auth-header">
+        <div class="auth-logo">AETHERIUS</div>
+        <h2>Admin Sign In</h2>
+        <p>Access the administrative dashboard control center</p>
+      </div>
+
+      <form id="admin-login-form">
+        <div class="form-group">
+          <label class="form-label" for="admin-id">Admin ID</label>
+          <input class="form-control" type="text" id="admin-id" placeholder="e.g. ADMIN001" required
+            autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-control" type="password" id="password" placeholder="••••••••" required
+            autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Sign In as Admin</button>
+      </form>
+
+      <!-- Predefined Demo Credentials Details Panel -->
+      <div class="credentials-box">
+        <div class="credentials-title" id="toggle-creds">
+          <span>🔑 Show Demo Admin Credentials</span>
+          <span id="chevron">▼</span>
+        </div>
+        <table class="credentials-table" id="creds-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Password</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ADMIN001</code></td>
+              <td><code>admin@123</code></td>
+              <td><button class="copy-btn" onclick="copyCreds('ADMIN001', 'admin@123')">Use</button></td>
+            </tr>
+            <tr>
+              <td><code>ADMIN002</code></td>
+              <td><code>admin@234</code></td>
+              <td><button class="copy-btn" onclick="copyCreds('ADMIN002', 'admin@234')">Use</button></td>
+            </tr>
+            <tr>
+              <td><code>ADMIN003</code></td>
+              <td><code>admin@345</code></td>
+              <td><button class="copy-btn" onclick="copyCreds('ADMIN003', 'admin@345')">Use</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="auth-footer">
+        Looking for the Student Portal? <a href="student-login.html">Student Sign In</a>
+        <div style="margin-top: 20px;">
+          <a href="index.html" style="font-size: 0.85rem; color: var(--text-muted);">← Back to Portal Selection</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Guest Check
+      Auth.guardGuestRoute();
+
+      const form = document.getElementById("admin-login-form");
+      const toggleCreds = document.getElementById("toggle-creds");
+      const credsTable = document.getElementById("creds-table");
+      const chevron = document.getElementById("chevron");
+
+      // Collapsible Table
+      toggleCreds.addEventListener("click", () => {
+        const isOpen = credsTable.classList.toggle("open");
+        chevron.textContent = isOpen ? "▲" : "▼";
+      });
+
+      // Submit
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const adminId = document.getElementById("admin-id").value.trim();
+        const password = document.getElementById("password").value;
+
+        const result = Auth.loginAdmin(adminId, password);
+
+        if (result.success) {
+          DB.showToast(result.message, 'success');
+          setTimeout(() => {
+            window.location.href = 'admin-panel.html';
+          }, 800);
+        } else {
+          DB.showToast(result.message, 'error');
+        }
+      });
+    });
+
+    // Helper for demo credentials autofill
+    function copyCreds(id, pwd) {
+      document.getElementById("admin-id").value = id;
+      document.getElementById("password").value = pwd;
+      DB.showToast("Credentials filled!", "success");
+    }
+  </script>
+</body>
+
+</html>

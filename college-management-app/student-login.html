@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login | Aetherius</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-card glass-panel">
+      
+      <div class="auth-header">
+        <div class="auth-logo">AETHERIUS</div>
+        <h2>Student Sign In</h2>
+        <p>Enter your enrollment details to access your dashboard</p>
+      </div>
+
+      <form id="student-login-form">
+        <div class="form-group">
+          <label class="form-label" for="enrollment">Enrollment Number</label>
+          <input class="form-control" type="text" id="enrollment" placeholder="e.g. ENR202601" required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-control" type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Sign In</button>
+      </form>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="student-register.html">Create one here</a>
+        <div style="margin-top: 20px;">
+          <a href="index.html" style="font-size: 0.85rem; color: var(--text-muted);">← Back to Portal Selection</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Guest Check
+      Auth.guardGuestRoute();
+
+      const form = document.getElementById("student-login-form");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const enrollment = document.getElementById("enrollment").value.trim();
+        const password = document.getElementById("password").value;
+
+        const result = Auth.loginStudent(enrollment, password);
+
+        if (result.success) {
+          DB.showToast(result.message, 'success');
+          setTimeout(() => {
+            window.location.href = 'student-dashboard.html';
+          }, 800);
+        } else {
+          DB.showToast(result.message, 'error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

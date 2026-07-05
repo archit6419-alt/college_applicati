@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration | Aetherius</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .strength-meter {
+      height: 4px;
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      margin-top: 8px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all 0.3s;
+    }
+    .strength-text {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      display: block;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-card auth-card-wide glass-panel">
+      
+      <div class="auth-header">
+        <div class="auth-logo">AETHERIUS</div>
+        <h2>Create Student Account</h2>
+        <p>Register below to gain access to the student dashboard</p>
+      </div>
+
+      <form id="student-register-form">
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+          
+          <div class="form-group">
+            <label class="form-label" for="fullname">Full Name</label>
+            <input class="form-control" type="text" id="fullname" placeholder="John Doe" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="enrollment">Enrollment Number</label>
+            <input class="form-control" type="text" id="enrollment" placeholder="e.g. ENR202601" required>
+            <small id="enrollment-status" style="font-size: 0.75rem; display: block; margin-top: 4px;"></small>
+          </div>
+
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+
+          <div class="form-group">
+            <label class="form-label" for="department">Department</label>
+            <select class="form-control" id="department" required>
+              <option value="" disabled selected>Select Department</option>
+              <option value="Computer">Computer Engineering</option>
+              <option value="Civil">Civil Engineering</option>
+              <option value="Electrical">Electrical Engineering</option>
+              <option value="Mechanical">Mechanical Engineering</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input class="form-control" type="email" id="email" placeholder="john.doe@college.edu" required autocomplete="email">
+          </div>
+
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" type="password" id="password" placeholder="••••••••" required autocomplete="new-password">
+            <div class="strength-meter">
+              <div class="strength-bar" id="strength-bar"></div>
+            </div>
+            <span class="strength-text" id="strength-text">Password Strength</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirm-password">Confirm Password</label>
+            <input class="form-control" type="password" id="confirm-password" placeholder="••••••••" required autocomplete="new-password">
+            <small id="password-match-status" style="font-size: 0.75rem; display: block; margin-top: 4px;"></small>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Register Account</button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="student-login.html">Sign in here</a>
+        <div style="margin-top: 20px;">
+          <a href="index.html" style="font-size: 0.85rem; color: var(--text-muted);">← Back to Portal Selection</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Guest Check
+      Auth.guardGuestRoute();
+
+      const form = document.getElementById("student-register-form");
+      const enrollmentInput = document.getElementById("enrollment");
+      const enrollmentStatus = document.getElementById("enrollment-status");
+      const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("confirm-password");
+      const passwordMatchStatus = document.getElementById("password-match-status");
+      const strengthBar = document.getElementById("strength-bar");
+      const strengthText = document.getElementById("strength-text");
+
+      // Enrollment uniqueness check (live feedback)
+      enrollmentInput.addEventListener("input", () => {
+        const value = enrollmentInput.value.trim();
+        if (value.length < 3) {
+          enrollmentStatus.textContent = "";
+          return;
+        }
+
+        const match = DB.findStudent(value);
+        if (match) {
+          enrollmentStatus.textContent = "Enrollment ID taken";
+          enrollmentStatus.style.color = "var(--color-error)";
+        } else {
+          enrollmentStatus.textContent = "Enrollment ID available";
+          enrollmentStatus.style.color = "var(--color-success)";
+        }
+      });
+
+      // Password strength indicator
+      passwordInput.addEventListener("input", () => {
+        const val = passwordInput.value;
+        let score = 0;
+        if (!val) {
+          strengthBar.style.width = "0%";
+          strengthText.textContent = "Password Strength";
+          return;
+        }
+
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        if (score <= 1) {
+          strengthBar.style.width = "33%";
+          strengthBar.style.backgroundColor = "var(--color-error)";
+          strengthText.textContent = "Weak Password";
+          strengthText.style.color = "var(--color-error)";
+        } else if (score <= 3) {
+          strengthBar.style.width = "66%";
+          strengthBar.style.backgroundColor = "var(--color-warning)";
+          strengthText.textContent = "Medium Password";
+          strengthText.style.color = "var(--color-warning)";
+        } else {
+          strengthBar.style.width = "100%";
+          strengthBar.style.backgroundColor = "var(--color-success)";
+          strengthText.textContent = "Strong Password";
+          strengthText.style.color = "var(--color-success)";
+        }
+
+        checkPasswordsMatch();
+      });
+
+      confirmPasswordInput.addEventListener("input", checkPasswordsMatch);
+
+      function checkPasswordsMatch() {
+        const p1 = passwordInput.value;
+        const p2 = confirmPasswordInput.value;
+        if (!p2) {
+          passwordMatchStatus.textContent = "";
+          return;
+        }
+        if (p1 === p2) {
+          passwordMatchStatus.textContent = "Passwords match";
+          passwordMatchStatus.style.color = "var(--color-success)";
+        } else {
+          passwordMatchStatus.textContent = "Passwords do not match";
+          passwordMatchStatus.style.color = "var(--color-error)";
+        }
+      }
+
+      // Handle Submit
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("fullname").value.trim();
+        const enrollment = enrollmentInput.value.trim();
+        const department = document.getElementById("department").value;
+        const email = document.getElementById("email").value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        // Perform DB call
+        const result = Auth.registerStudent(name, enrollment, department, email, password, confirmPassword);
+
+        if (result.success) {
+          DB.showToast(result.message, 'success');
+          form.reset();
+          strengthBar.style.width = "0%";
+          strengthText.textContent = "Password Strength";
+          enrollmentStatus.textContent = "";
+          passwordMatchStatus.textContent = "";
+
+          setTimeout(() => {
+            window.location.href = 'student-login.html';
+          }, 1500);
+        } else {
+          DB.showToast(result.message, 'error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

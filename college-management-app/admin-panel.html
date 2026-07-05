@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Control Center | Aetherius</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Route guard runs immediately before rendering
+    Auth.guardAdminRoute();
+  </script>
+</head>
+
+<body>
+
+  <!-- Mobile Top Navigation Header -->
+  <div class="mobile-header">
+    <div class="sidebar-logo">AETHERIUS ADMIN</div>
+    <button class="mobile-menu-btn" id="mobile-toggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="dashboard-layout">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <div class="user-avatar"
+          style="border-radius: 10px; width: 36px; height: 36px; font-size: 1rem; background: var(--color-primary);">AD
+        </div>
+        <div class="sidebar-logo">Admin Center</div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li class="nav-item">
+          <div class="nav-link active" data-tab="overview">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="9"></rect>
+              <rect x="14" y="3" width="7" height="5"></rect>
+              <rect x="14" y="12" width="7" height="9"></rect>
+              <rect x="3" y="16" width="7" height="5"></rect>
+            </svg>
+            <span>Overview</span>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-tab="upload-center">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Resource Upload</span>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-tab="manage-chat">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Manage Chat</span>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-tab="student-registry">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>Student Registry</span>
+          </div>
+        </li>
+      </ul>
+
+      <!-- User Profile Box -->
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-admin-avatar" style="background: var(--color-primary);">AD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-admin-name">Loading...</div>
+          <div class="user-role" id="sidebar-admin-id">ADMIN000</div>
+        </div>
+        <button onclick="Auth.logout()" class="btn btn-secondary" style="padding: 8px; border-radius: 8px;"
+          title="Logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main class="main-content">
+
+      <div class="content-header">
+        <div class="content-title">
+          <h2 id="header-title">Admin Dashboard</h2>
+          <p id="header-subtitle">Welcome back, Admin Panel Controller</p>
+        </div>
+      </div>
+
+      <!-- TAB 1: OVERVIEW -->
+      <section class="dashboard-tab active" id="tab-overview">
+        <!-- Stats Widgets -->
+        <div class="stats-grid">
+          <div class="stats-card glass-panel">
+            <div class="stats-icon-wrapper">🎓</div>
+            <div class="stats-info">
+              <h4>Total Enrolled</h4>
+              <p id="stat-students">0</p>
+            </div>
+          </div>
+
+          <div class="stats-card glass-panel">
+            <div class="stats-icon-wrapper">📁</div>
+            <div class="stats-info">
+              <h4>PDF Files</h4>
+              <p id="stat-pdfs">0</p>
+            </div>
+          </div>
+
+          <div class="stats-card glass-panel">
+            <div class="stats-icon-wrapper">🖼️</div>
+            <div class="stats-info">
+              <h4>Gallery Images</h4>
+              <p id="stat-images">0</p>
+            </div>
+          </div>
+
+          <div class="stats-card glass-panel">
+            <div class="stats-icon-wrapper">💬</div>
+            <div class="stats-info">
+              <h4>Chat Messages</h4>
+              <p id="stat-chats">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+
+          <!-- Recent Activity -->
+          <div class="glass-panel" style="padding: 24px;">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 8px;">System
+              Logs</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem;" id="logs-container">
+              <!-- Logs injected -->
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="glass-panel" style="padding: 24px; display:flex; flex-direction:column; gap:16px;">
+            <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 8px;">Quick Shortcuts</h3>
+            <button class="btn btn-primary" onclick="switchTab('upload-center')"
+              style="justify-content: flex-start; text-align: left;">
+              ➕ Upload Syllabus/Resource Files
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('manage-chat')"
+              style="justify-content: flex-start; text-align: left;">
+              💬 View & Moderate Broadcaster Chats
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('student-registry')"
+              style="justify-content: flex-start; text-align: left;">
+              📋 Review Enrolled Students Database
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 2: RESOURCE UPLOAD CENTER -->
+      <section class="dashboard-tab" id="tab-upload-center">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+
+          <!-- PDF Upload Form -->
+          <div class="glass-panel" style="padding: 30px;">
+            <h3
+              style="margin-bottom: 20px; color: var(--color-primary); border-bottom: 1px solid var(--glass-border); padding-bottom: 8px;">
+              Upload PDF Resource
+            </h3>
+
+            <form id="upload-pdf-form">
+              <div class="form-group">
+                <label class="form-label" for="pdf-title">Document Title</label>
+                <input class="form-control" type="text" id="pdf-title" placeholder="e.g. Semester 4 Maths Syllabus"
+                  required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="pdf-desc">Description</label>
+                <textarea class="form-control" id="pdf-desc" placeholder="Provide a short summary of the syllabus..."
+                  required rows="3" style="resize: none;"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="pdf-dept">Department Visibility</label>
+                <select class="form-control" id="pdf-dept" required>
+                  <option value="All">All Departments</option>
+                  <option value="Computer">Computer Engineering</option>
+                  <option value="Civil">Civil Engineering</option>
+                  <option value="Electrical">Electrical Engineering</option>
+                  <option value="Mechanical">Mechanical Engineering</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Upload File (PDF)</label>
+                <div class="upload-dropzone" onclick="document.getElementById('pdf-file').click()">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <polyline points="9 15 12 12 15 15"></polyline>
+                  </svg>
+                  <div>Click to upload or drag PDF file</div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Max Recommended Size: 2MB</span>
+                  <input type="file" id="pdf-file" class="file-input" accept="application/pdf" required>
+                  <div class="file-preview-name" id="pdf-file-preview"></div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Document</button>
+            </form>
+          </div>
+
+          <!-- Image Upload Form -->
+          <div class="glass-panel" style="padding: 30px;">
+            <h3
+              style="margin-bottom: 20px; color: var(--color-secondary); border-bottom: 1px solid var(--glass-border); padding-bottom: 8px;">
+              Upload Image Resource
+            </h3>
+
+            <form id="upload-image-form">
+              <div class="form-group">
+                <label class="form-label" for="img-title">Image Title</label>
+                <input class="form-control" type="text" id="img-title" placeholder="e.g. Robot Exhibition Hall"
+                  required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="img-desc">Description</label>
+                <textarea class="form-control" id="img-desc" placeholder="Details about this campus snapshot..."
+                  required rows="3" style="resize: none;"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="img-dept">Department Target</label>
+                <select class="form-control" id="img-dept" required>
+                  <option value="All">All Departments</option>
+                  <option value="Computer">Computer Engineering</option>
+                  <option value="Civil">Civil Engineering</option>
+                  <option value="Electrical">Electrical Engineering</option>
+                  <option value="Mechanical">Mechanical Engineering</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Upload File (Image)</label>
+                <div class="upload-dropzone" onclick="document.getElementById('img-file').click()">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <div>Click to upload or drag Image</div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Format: PNG, JPG, WEBP</span>
+                  <input type="file" id="img-file" class="file-input" accept="image/*" required>
+                  <div class="file-preview-name" id="img-file-preview"></div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Image</button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 3: CHAT MODERATION -->
+      <section class="dashboard-tab" id="tab-manage-chat">
+        <div class="admin-chat-grid" id="chat-management-list">
+          <!-- Chat messages injected -->
+        </div>
+      </section>
+
+      <!-- TAB 4: STUDENT REGISTRY -->
+      <section class="dashboard-tab" id="tab-student-registry">
+
+        <div class="registry-controls">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="form-control" id="student-search"
+              placeholder="Search student by name or enrollment number...">
+          </div>
+
+          <div class="filter-group">
+            <select class="form-control" id="registry-dept-filter" style="width: 200px; padding: 10px;">
+              <option value="All">All Departments</option>
+              <option value="Computer">Computer Engineering</option>
+              <option value="Civil">Civil Engineering</option>
+              <option value="Electrical">Electrical Engineering</option>
+              <option value="Mechanical">Mechanical Engineering</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrapper glass-panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Enrollment Number</th>
+                <th>Full Name</th>
+                <th>Department</th>
+                <th>Email Address</th>
+              </tr>
+            </thead>
+            <tbody id="student-registry-table-body">
+              <!-- Enrolled Students lists injected -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Client-side Application Scripts -->
+  <script>
+    let adminSessionData = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentSession = Auth.getSession();
+      if (!currentSession || currentSession.role !== 'admin') return;
+
+      adminSessionData = currentSession.data;
+
+      // Populate Admin Details in UI
+      document.getElementById("sidebar-admin-name").textContent = adminSessionData.name;
+      document.getElementById("sidebar-admin-id").textContent = adminSessionData.id;
+      document.getElementById("header-subtitle").textContent = `Logged in as: ${adminSessionData.name} (${adminSessionData.id})`;
+
+      // Navigation routing (tab selectors)
+      const tabs = document.querySelectorAll(".nav-link");
+      const panels = document.querySelectorAll(".dashboard-tab");
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          tabs.forEach(t => t.classList.remove("active"));
+          panels.forEach(p => p.classList.remove("active"));
+
+          tab.classList.add("active");
+          const targetTab = tab.getAttribute("data-tab");
+          switchTab(targetTab);
+        });
+      });
+
+      // Mobile Menu Trigger Toggle
+      document.getElementById("mobile-toggle").addEventListener("click", () => {
+        document.getElementById("dashboard-sidebar").classList.toggle("mobile-open");
+      });
+
+      // Drag and drop zone indicators
+      setupDropzonePreviews();
+
+      // Form Submissions
+      setupUploadForms();
+
+      // Student registry search & filters
+      document.getElementById("student-search").addEventListener("input", renderStudentRegistry);
+      document.getElementById("registry-dept-filter").addEventListener("change", renderStudentRegistry);
+
+      // Load initial stats and tables
+      loadOverviewStats();
+      renderLogs();
+    });
+
+    // Helper to switch active tabs
+    function switchTab(tabId) {
+      const tabs = document.querySelectorAll(".nav-link");
+      const panels = document.querySelectorAll(".dashboard-tab");
+
+      tabs.forEach(t => {
+        t.classList.remove("active");
+        if (t.getAttribute("data-tab") === tabId) t.classList.add("active");
+      });
+
+      panels.forEach(p => {
+        p.classList.remove("active");
+        if (p.id === `tab-${tabId}`) p.classList.add("active");
+      });
+
+      document.getElementById("dashboard-sidebar").classList.remove("mobile-open");
+
+      // Dynamic view loaders
+      if (tabId === 'overview') {
+        loadOverviewStats();
+        renderLogs();
+      }
+      if (tabId === 'manage-chat') renderChatModeration();
+      if (tabId === 'student-registry') renderStudentRegistry();
+    }
+
+    // --- LOGIC: OVERVIEW & SYSTEM LOGS ---
+    function loadOverviewStats() {
+      document.getElementById("stat-students").textContent = DB.getStudents().length;
+      document.getElementById("stat-pdfs").textContent = DB.getPDFs().length;
+      document.getElementById("stat-images").textContent = DB.getImages().length;
+      document.getElementById("stat-chats").textContent = DB.getMessages().length;
+    }
+
+    function renderLogs() {
+      const container = document.getElementById("logs-container");
+      container.innerHTML = "";
+
+      const pdfCount = DB.getPDFs().length;
+      const imgCount = DB.getImages().length;
+      const studCount = DB.getStudents().length;
+
+      const logs = [
+        `System initialization completed at 2026-07-05 17:34.`,
+        `Student authentication backend online. Total records: ${studCount}.`,
+        `Resource databases scanned. Loaded ${pdfCount} PDFs, ${imgCount} PNG/JPG elements.`,
+        `Predefined security protocols active. Ready.`
+      ];
+
+      logs.forEach(log => {
+        const item = document.createElement("div");
+        item.style.padding = "10px";
+        item.style.borderRadius = "8px";
+        item.style.background = "rgba(255,255,255,0.02)";
+        item.style.borderLeft = "3px solid var(--color-primary)";
+        item.textContent = log;
+        container.appendChild(item);
+      });
+    }
+
+
+    // --- LOGIC: DRAG & DROP & PREVIEWS ---
+    function setupDropzonePreviews() {
+      const pdfInput = document.getElementById("pdf-file");
+      const pdfPreview = document.getElementById("pdf-file-preview");
+      pdfInput.addEventListener("change", () => {
+        const file = pdfInput.files[0];
+        pdfPreview.textContent = file ? `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)` : "";
+      });
+
+      const imgInput = document.getElementById("img-file");
+      const imgPreview = document.getElementById("img-file-preview");
+      imgInput.addEventListener("change", () => {
+        const file = imgInput.files[0];
+        imgPreview.textContent = file ? `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)` : "";
+      });
+    }
+
+
+    // --- LOGIC: UPLOADS ---
+    function setupUploadForms() {
+      // PDF Upload
+      const pdfForm = document.getElementById("upload-pdf-form");
+      pdfForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("pdf-title").value.trim();
+        const desc = document.getElementById("pdf-desc").value.trim();
+        const dept = document.getElementById("pdf-dept").value;
+        const fileInput = document.getElementById("pdf-file");
+        const file = fileInput.files[0];
+
+        if (!file) {
+          DB.showToast('Please select a PDF file first.', 'error');
+          return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) { // 2MB Limit
+          DB.showToast('File size exceeds 2MB limits. Reduce size.', 'error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const base64Data = event.target.result;
+
+          const newPdf = {
+            id: 'pdf_' + Date.now(),
+            title: title,
+            description: desc,
+            department: dept,
+            fileName: file.name,
+            fileData: base64Data,
+            uploadedBy: adminSessionData.id,
+            uploadedAt: Date.now()
+          };
+
+          const success = DB.addPDF(newPdf);
+          if (success) {
+            DB.showToast('PDF syllabus document uploaded successfully!', 'success');
+            pdfForm.reset();
+            document.getElementById("pdf-file-preview").textContent = "";
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Image Upload
+      const imgForm = document.getElementById("upload-image-form");
+      imgForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("img-title").value.trim();
+        const desc = document.getElementById("img-desc").value.trim();
+        const dept = document.getElementById("img-dept").value;
+        const fileInput = document.getElementById("img-file");
+        const file = fileInput.files[0];
+
+        if (!file) {
+          DB.showToast('Please select an image file first.', 'error');
+          return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) { // 2MB Limit
+          DB.showToast('Image size exceeds 2MB limits.', 'error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const base64Data = event.target.result;
+
+          const newImg = {
+            id: 'img_' + Date.now(),
+            title: title,
+            description: desc,
+            department: dept,
+            fileName: file.name,
+            fileData: base64Data,
+            uploadedBy: adminSessionData.id,
+            uploadedAt: Date.now()
+          };
+
+          const success = DB.addImage(newImg);
+          if (success) {
+            DB.showToast('Campus gallery snapshot uploaded successfully!', 'success');
+            imgForm.reset();
+            document.getElementById("img-file-preview").textContent = "";
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+
+    // --- LOGIC: CHAT MODERATION ---
+    function renderChatModeration() {
+      const container = document.getElementById("chat-management-list");
+      container.innerHTML = "";
+
+      const messages = DB.getMessages();
+
+      if (messages.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state glass-panel">
+            <div class="empty-icon">💬</div>
+            <h3>No Messages Posted</h3>
+            <p>Students have not broadcasted any messages yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Render items in reverse chronological order (newest first) for easier moderation
+      const sortedMessages = [...messages].sort((a, b) => b.timestamp - a.timestamp);
+
+      sortedMessages.forEach(msg => {
+        const card = document.createElement("div");
+        card.className = "admin-msg-card glass-panel";
+
+        let repliesContent = '';
+        if (msg.replies && msg.replies.length > 0) {
+          repliesContent = '<div class="admin-replies-list">';
+          msg.replies.forEach(rep => {
+            repliesContent += `
+              <div class="admin-reply-item">
+                <div><strong>${rep.senderName} (You):</strong> ${rep.text}</div>
+                <span class="chat-msg-time" style="align-self:flex-end;">${new Date(rep.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+            `;
+          });
+          repliesContent += '</div>';
+        }
+
+        card.innerHTML = `
+          <div class="admin-msg-header">
+            <div class="admin-msg-user-details">
+              <span class="admin-msg-user-name">${msg.senderName}</span>
+              <span class="admin-msg-user-sub">Enrollment: ${msg.senderId} • Dept: ${msg.senderDept}</span>
+            </div>
+            <div class="admin-msg-actions">
+              <span class="badge badge-${msg.senderDept.toLowerCase()}" style="margin-right:10px;">${msg.senderDept}</span>
+              <button class="btn btn-danger" onclick="deleteMessageThread('${msg.id}')" style="padding: 6px 12px; font-size: 0.8rem;">Delete Thread</button>
+            </div>
+          </div>
+          <div class="admin-msg-content">${msg.text}</div>
+          
+          ${repliesContent}
+
+          <!-- Reply Sub-form -->
+          <form class="reply-form" onsubmit="submitAdminReply(event, '${msg.id}')">
+            <input type="text" class="form-control" placeholder="Type your administrator reply..." required style="padding: 8px 12px; font-size: 0.85rem;">
+            <button type="submit" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Reply</button>
+          </form>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    window.submitAdminReply = function (event, msgId) {
+      event.preventDefault();
+      const input = event.target.querySelector('input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const success = DB.addReply(msgId, text, adminSessionData.name);
+      if (success) {
+        DB.showToast('Reply broadcasted successfully.', 'success');
+        renderChatModeration();
+      }
+    };
+
+    window.deleteMessageThread = function (msgId) {
+      if (confirm('Are you sure you want to delete this message thread permanently?')) {
+        const success = DB.deleteMessage(msgId);
+        if (success) {
+          DB.showToast('Message thread deleted from storage.', 'info');
+          renderChatModeration();
+        }
+      }
+    };
+
+
+    // --- LOGIC: STUDENT REGISTRY ---
+    function renderStudentRegistry() {
+      const tableBody = document.getElementById("student-registry-table-body");
+      tableBody.innerHTML = "";
+
+      const query = document.getElementById("student-search").value.trim().toLowerCase();
+      const deptFilter = document.getElementById("registry-dept-filter").value;
+
+      const students = DB.getStudents();
+
+      const filteredStudents = students.filter(student => {
+        const matchesQuery = student.name.toLowerCase().includes(query) || student.enrollment.toLowerCase().includes(query);
+        const matchesDept = deptFilter === 'All' || student.department === deptFilter;
+        return matchesQuery && matchesDept;
+      });
+
+      if (filteredStudents.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+              No registered students matching the filter query details.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filteredStudents.forEach(student => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="font-family: monospace; font-weight: 600; color: var(--color-primary);">${student.enrollment}</td>
+          <td><strong>${student.name}</strong></td>
+          <td><span class="badge badge-${student.department.toLowerCase()}">${student.department} Engineering</span></td>
+          <td>${student.email}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+
+</html>
