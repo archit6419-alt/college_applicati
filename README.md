@@ -1,2 +1,4 @@
-# college_applicati
-college app to manege pdf and img chat box 
+# college_projectsem5
+This is the college project.
+Content:
+This project is solve students problem to contact, resources, attendance,annussments.
